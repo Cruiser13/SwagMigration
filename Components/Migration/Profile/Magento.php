@@ -109,6 +109,19 @@ class Magento extends Profile
     }
 
     /**
+     * Returns the sql statement to select the shop system customer groups
+     *
+     * @return string {String} | sql for price groups
+     */
+    public function getCustomerGroupSelect()
+    {
+        return "
+			SELECT `customer_group_id` as id, `customer_group_code` as name
+			FROM {$this->quoteTable('customer_group')}
+		";
+    }
+
+    /**
      * Returns the sql statement to select the shop system payments
      *
      * @return string {String} | sql for the payments
@@ -117,7 +130,7 @@ class Magento extends Profile
     {
         return "
 			SELECT `method` as id, `method` as name
-			FROM {$this->quoteTable('sales_flat_quote_payment')}
+			FROM {$this->quoteTable('sales_flat_order_payment')}
 		";
     }
 
@@ -126,14 +139,27 @@ class Magento extends Profile
      *
      * @return array {Array} | order states: key - description
      */
-    public function getOrderStatus()
+//    public function getOrderStatus()
+//    {
+//        return [
+//            'pending' => 'Pending',
+//            'holded' => 'On Hold',
+//            'processing' => 'Processing',
+//            'complete' => 'Complete',
+//        ];
+//    }
+
+    /**
+     * Returns the sql statement to select the order states
+     *
+     * @return string {String} | sql for the order states
+     */
+    public function getOrderStatusSelect()
     {
-        return [
-            'pending' => 'Pending',
-            'holded' => 'On Hold',
-            'processing' => 'Processing',
-            'complete' => 'Complete',
-        ];
+        return "
+			SELECT `status` as id, `label` as name
+			FROM {$this->quoteTable('sales_order_status')}
+		";
     }
 
     /**
