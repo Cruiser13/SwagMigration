@@ -376,6 +376,21 @@ class Order extends AbstractResource
             $number = str_replace('#', '', $number);
         }
 
+        //Try to modify number to fit magento into shopware's scheme
+        $number = preg_replace('/[^a-zA-Z0-9-_.]/', '-', $number);
+        $number = str_replace(' ','-',$number);
+        $number = str_replace('/','-',$number);
+        $number = str_replace('--','-',$number);
+        $number = str_replace('--','-',$number);
+        if(strlen($number) > 30){
+            $number = substr($number, 0, 30);
+        }
+        else{
+            if(strlen($number) < 4){
+                $number = '0000'.$number;
+            }
+        }
+
         if ($numberValidationMode !== 'ignore'
             && (empty($number) || strlen($number) > 30 || strlen($number) < 4
                 || preg_match('/[^a-zA-Z0-9-_.]/', $number))
@@ -399,6 +414,8 @@ class Order extends AbstractResource
                     break;
             }
         }
+
+        $order['article_ordernumber'] = $number;
 
         $sql = 'SELECT `targetID` FROM `s_plugin_migrations` WHERE `typeID`=? AND `sourceID`=?';
         $order['orderID'] = Shopware()->Db()->fetchOne($sql, [Migration::MAPPING_ORDER, $order['orderID']]);

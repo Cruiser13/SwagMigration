@@ -215,6 +215,14 @@ class Product extends AbstractResource
         $number = str_replace('/','-',$number);
         $number = str_replace('--','-',$number);
         $number = str_replace('--','-',$number);
+        if(strlen($number) > 30){
+            $number = substr($number, 0, 30);
+        }
+        else{
+            if(strlen($number) < 4){
+                $number = '0000'.$number;
+            }
+        }
 
         if ($numberValidationMode !== 'ignore'
             && (empty($number) || strlen($number) > 30 || strlen($number) < 4 || preg_match('/[^a-zA-Z0-9-_.]/', $number))
@@ -230,6 +238,8 @@ class Product extends AbstractResource
                     break;
             }
         }
+
+        $product['ordernumber'] = $number;
 
         //Attribute
         if (!empty($attributes)) {
