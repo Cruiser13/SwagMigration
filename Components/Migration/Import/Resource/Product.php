@@ -209,6 +209,13 @@ class Product extends AbstractResource
         // Check the ordernumber
         $number = isset($product['ordernumber']) ? $product['ordernumber'] : '';
 
+        //Try to modify number to fit magento into shopware's scheme
+        $number = preg_replace('/[^a-zA-Z0-9-_.]/', '-', $number);
+        $number = str_replace(' ','-',$number);
+        $number = str_replace('/','-',$number);
+        $number = str_replace('--','-',$number);
+        $number = str_replace('--','-',$number);
+
         if ($numberValidationMode !== 'ignore'
             && (empty($number) || strlen($number) > 30 || strlen($number) < 4 || preg_match('/[^a-zA-Z0-9-_.]/', $number))
         ) {
