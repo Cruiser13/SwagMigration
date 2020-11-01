@@ -736,6 +736,53 @@ class ArticleImporter
             }
         }
 
+        //Try to fix this shit import somehow
+        if(key_exists('color',$article)){
+            $article['attr']['color'] = $article['color'];
+        }
+        if(key_exists('geschlecht',$article)){
+            $article['attr']['gender'] = $article['geschlecht'];
+        }
+        if(key_exists('marketingcost',$article)){
+            $article['attr']['marketingcost'] = $article['marketingcost'];
+        }
+        if(key_exists('farbauswahl',$article)){
+            $article['attr']['color'] = $article['farbauswahl'];
+        }
+        if(key_exists('einkauf',$article)){
+            $article['attr']['costprice'] = $article['einkauf'];
+        }
+        if(key_exists('guertellaengen',$article)){
+            $article['attr']['beltlength'] = $article['guertellaengen'];
+        }
+        if(key_exists('groesse',$article)){
+            $article['attr']['clothessize'] = $article['groesse'];
+        }
+        if(key_exists('metal_type',$article)){
+            $article['attr']['metal'] = $article['metal_type'];
+        }
+        if(key_exists('parfum',$article)){
+            $article['attr']['perfume'] = $article['parfum'];
+        }
+        if(key_exists('schuhe',$article)){
+            $article['attr']['shoesize'] = $article['schuhe'];
+        }
+        if(key_exists('groesse',$article)){
+            $article['attr']['clothessize'] = $article['groesse'];
+        }
+        if(key_exists('wareneingang',$article)){
+            $article['attr']['arrivaldate'] = $article['wareneingang'];
+        }
+        if(key_exists('purchaseprice',$article)){
+            $article['attr']['purchaseprice'] = $article['purchaseprice'];
+        }
+        if(key_exists('helpsupplier',$article)){
+            $article['attr']['helpsupplier'] = $article['helpsupplier'];
+        }
+        if(key_exists('deliverytime',$article)){
+            $article['attr']['deliverytime'] = $article['deliverytime'];
+        }
+
         return $article;
     }
 
