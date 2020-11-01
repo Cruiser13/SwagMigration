@@ -549,7 +549,8 @@ class Magento extends Profile
 					c.meta_title as cmsheadline,
                     c.meta_title as meta_title,
 					c.description as cmstext,
-					c.is_active as active
+					c.is_active as active,
+					IF(c.include_in_menu=1, 0, 1) as hideTop
 				FROM
 					{$this->quoteTable('core_store')} s,
 					{$this->quoteTable('core_store_group')} g,
