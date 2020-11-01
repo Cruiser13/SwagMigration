@@ -363,7 +363,9 @@ class Magento extends Profile
 				tax_class_id.value								as taxID,
 				cost.value										as baseprice,
 				IFNULL(special_price.value, price.value)		as price,
-				IF(special_price.value IS NULL, 0, price.value) as pseudoprice
+				IF(special_price.value IS NULL, 0, price.value) as pseudoprice,
+				
+				entitiyvarcharean.value                         as ean
 
 				$custom_select
 
@@ -384,6 +386,11 @@ class Magento extends Profile
 			-- Joins the attribute values for the manufacturer
 			LEFT JOIN {$this->quoteTable('eav_attribute_option_value')} manufacturer_option
 			ON manufacturer_option.option_id=manufacturer.value
+			
+			-- Join for ean
+			LEFT JOIN {$this->quoteTable('catalog_product_entity_varchar')} entitiyvarcharean
+			ON entitiyvarcharean.`entity_id`=catalog_product.`entity_id`
+			AND entitiyvarcharean.`attribute_id`=198
 
             -- Need to order by parent id in order to correctly assign children later
 			ORDER BY relation.parent_id ASC
