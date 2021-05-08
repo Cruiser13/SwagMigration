@@ -1083,7 +1083,14 @@ class ArticleImporter
         $columns = '';
         if (!empty($article['articleattributesID'])) {
             foreach ($article['attr'] as $key => $value) {
-                $values .= ", $key = $value";
+               if($value) {
+                    if(stripos($value,"'") === 0){
+                        $values .= ", $key = $value";
+                    }
+                    else{
+                        $values .= ", $key = '$value'";
+                    }
+                }
             }
 
             if ($values === '') {
