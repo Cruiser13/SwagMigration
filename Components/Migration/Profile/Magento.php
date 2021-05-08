@@ -413,6 +413,7 @@ class Magento extends Profile
 				IFNULL(special_price.value, price.value)		as price,
 				IF(special_price.value IS NULL, 0, price.value) as pseudoprice,
 				
+				IF(entitiyinta.value = 1, 0, 1)                 as active,
 				entitiyvarcharean.value                         as ean
 
 				{$this->createAttributeSelect('catalog_product', $productAttributes, 0)}
@@ -421,6 +422,11 @@ class Magento extends Profile
 
 			-- Joins the attribute tables
 			{$this->createTableSelect('catalog_product', $attributes, 0)}
+
+			-- Join for status
+			LEFT JOIN {$this->quoteTable('catalog_product_entity_int')} entitiyinta
+			ON entitiyinta.`entity_id`=catalog_product.`entity_id`
+			AND entitiyinta.`attribute_id`=96
 
 			-- Join for instock
 			LEFT JOIN {$this->quoteTable('cataloginventory_stock_item')} cs
