@@ -393,6 +393,7 @@ class Magento extends Profile
 			SELECT
 
 				catalog_product.entity_id						as productID,
+			    catalog_product.entity_id						as magentoid,
 				catalog_product.sku								as ordernumber,
 				catalog_product.created_at						as added,
 
@@ -413,8 +414,9 @@ class Magento extends Profile
 				IFNULL(special_price.value, price.value)		as price,
 				IF(special_price.value IS NULL, 0, price.value) as pseudoprice,
 				
-				IF(entitiyinta.value = 1, 0, 1)                 as active,
-				entitiyvarcharean.value                         as ean
+			    IF(entitiyinta.value = 1, 1, 0)                 as active,
+				entitiyvarcharean.value                         as ean,
+				arrivaldate.value                               as wareneingang
 
 				{$this->createAttributeSelect('catalog_product', $productAttributes, 0)}
 
@@ -424,10 +426,17 @@ class Magento extends Profile
 			{$this->createTableSelect('catalog_product', $attributes, 0)}
 
 			-- Join for status
+
+			-- Join for status
 			LEFT JOIN {$this->quoteTable('catalog_product_entity_int')} entitiyinta
 			ON entitiyinta.`entity_id`=catalog_product.`entity_id`
 			AND entitiyinta.`attribute_id`=96
 
+			-- Join for wareneingangsdatum
+			LEFT JOIN {$this->quoteTable('catalog_product_entity_datetime')} arrivaldate
+			ON arrivaldate.`entity_id`=catalog_product.`entity_id`
+			AND arrivaldate.`attribute_id`=193
+			    
 			-- Join for instock
 			LEFT JOIN {$this->quoteTable('cataloginventory_stock_item')} cs
 			ON cs.`product_id`=catalog_product.`entity_id`
@@ -450,6 +459,7 @@ class Magento extends Profile
 			ORDER BY relation.parent_id ASC
 		";
 
+//        echo $sql;
         return $sql;
     }
 
