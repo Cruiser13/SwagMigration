@@ -149,6 +149,7 @@ class ArticleImporter
 
         $article = $this->findExistingEntries($article);
         if ($article === false) {
+            //echo 'false';
             return false;
         }
 
@@ -323,7 +324,7 @@ class ArticleImporter
         if (isset($price['pseudoprice'])) {
             $price['pseudoprice'] = $this->toFloat($price['pseudoprice']);
         } else {
-            $price['pseudoprice'] = 0;
+            $price['pseudoprice'] = $price['price'];
         }
         if (isset($price['baseprice'])) {
             $price['baseprice'] = $this->toFloat($price['baseprice']);
@@ -716,6 +717,9 @@ class ArticleImporter
             $article['articledetailsID'] = (int) $article['articledetailsID'];
         }
 
+//        echo PHP_EOL;
+//        print_r($article);
+//        echo PHP_EOL;
         if (isset($article['attr']) && is_array($article['attr'])) {
             foreach ($article['attr'] as $attrKey => $attrValue) {
                 $key = (int) str_replace('attr', '', $attrKey);
@@ -773,6 +777,11 @@ class ArticleImporter
         if(key_exists('wareneingang',$article)){
             $article['attr']['arrivaldate'] = $article['wareneingang'];
         }
+        else{
+            if(key_exists('arrivaldate',$article)){
+                $article['attr']['arrivaldate'] = $article['arrivaldate'];
+            }
+        }
         if(key_exists('purchaseprice',$article)){
             $article['attr']['purchaseprice'] = $article['purchaseprice'];
         }
@@ -781,6 +790,9 @@ class ArticleImporter
         }
         if(key_exists('deliverytime',$article)){
             $article['attr']['deliverytime'] = $article['deliverytime'];
+        }
+        if(key_exists('magentoid',$article)){
+            $article['attr']['magentoid'] = $article['magentoid'];
         }
 
         return $article;
@@ -1081,9 +1093,10 @@ class ArticleImporter
 
         $values = '';
         $columns = '';
+        //echo "running with id ".$article['articleID']." and details id ".$article['articledetailsID'].' '.PHP_EOL;
         if (!empty($article['articleattributesID'])) {
             foreach ($article['attr'] as $key => $value) {
-               if($value) {
+                if($value) {
                     if(stripos($value,"'") === 0){
                         $values .= ", $key = $value";
                     }
@@ -1097,9 +1110,14 @@ class ArticleImporter
                 return $article;
             }
 
+            if(stripos($values,',') === 0){
+                $values = substr($values,1);
+            }
+
             $sql = "UPDATE s_articles_attributes
                     SET $values
                     WHERE articledetailsID = {$article['articledetailsID']}";
+            //echo $sql.PHP_EOL;
             $this->db->query($sql);
         } else {
             if (!empty($article['attr'])) {
@@ -1113,7 +1131,11 @@ class ArticleImporter
             }
 
             if ($values === '') {
+                //print_r($article);
+                //echo PHP_EOL;
                 return $article;
+//                $columns = ', attr1';
+//                $values = ', NULL';
             }
 
             $sql = "INSERT INTO s_articles_attributes
@@ -1122,13 +1144,14 @@ class ArticleImporter
             $sql = "INSERT INTO s_articles_attributes
                     (articledetailsID $columns) VALUES
                     ({$article['articleID']} $values)";
-//            echo $sql.PHP_EOL;
+            //echo $sql.PHP_EOL;
 //            exit;
             try{
                 $this->db->query($sql);
             }
             catch (\Exception $e){
                 //Do not do anything
+                //echo $e.PHP_EOL;
             }
             $article['articleattributesID'] = $this->db->lastInsertId();
         }
