@@ -65,15 +65,18 @@ class ImageImporter
             return false;
         }
 
+        //echo "trying to import image for ".$image['articleID'].PHP_EOL;
         $image = $this->prepareImageData($image);
         if (empty($image['articleID']) || (empty($image['image']) && empty($image['name']))) {
+            echo "some image data missing";
             return false;
         }
 
         $image['main'] = $this->setMain($image['main'], $image['articleID']);
 
-        $uploadFile = $this->copyImage($image['image'], $image['name']);
+        $uploadFile = $this->copyImage($image['link'], $image['name']);
         if ($uploadFile === false) {
+            //echo "image copy failed";
             return false;
         }
 
@@ -92,6 +95,7 @@ class ImageImporter
         $articleRepository = $this->getArticleRepository();
         $article = $articleRepository->find((int) $image['articleID']);
         if (!$article instanceof Article) {
+            echo "article not found";
             $this->logger->error("Article '{$image['articleID']}' not found!");
 
             return false;
